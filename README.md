@@ -1,8 +1,8 @@
 # Sionna Neural Receiver: Hybrid 6G AI-RAN Prototype
 
-[![Python 3.12+](https://shields.io)](https://python.org)
-[![PyTorch Native](https://shields.io)](https://pytorch.org)
-[![NVIDIA 6G Ecosystem](https://shields.io)](https://nvidia.com)
+[![Python 3.12+](https://img.shields.io/badge/Python-3.12%2B-blue?logo=python&logoColor=white)](https://python.org)
+[![PyTorch Native](https://img.shields.io/badge/PyTorch-Native-EE4C2C?logo=pytorch&logoColor=white)](https://pytorch.org)
+[![NVIDIA 6G Ecosystem](https://img.shields.io/badge/NVIDIA-6G%20Ecosystem-76B900?logo=nvidia&logoColor=white)](https://www.nvidia.com/en-us/industries/telecommunications/ai-ran/)
 
 An implementation of a **6G AI-Native Physical Layer Receiver** utilizing a hybrid cloud-to-edge hardware engineering loop. This repository demonstrates how to bypass local CUDA hardware constraints by shifting heavy 3GPP electromagnetic simulation physics onto cloud GPU nodes via **NVIDIA Sionna 2.0**, while executing model validation, profiling, and inference locally on modern unified memory configurations.
 
