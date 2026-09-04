@@ -84,27 +84,30 @@ cd src
 python3 mac_inference.py
 ```
 
+## What Exactly Does It Solve?
 
-## 🎯 The Core Engineering Problems Solved
+It solves the infrastructure, accessibility, and runtime bottlenecks of prototyping 6G AI models. Specifically, it addresses three major pain points:
 
-This repository provides a concrete solution to the high barrier to entry and resource bottlenecks associated with prototyping AI-native physical layers (L1) in next-generation networks. By establishing a **Hybrid Hardware Workflow**, it decouples heavy electromagnetic channel modeling from localized edge execution.
+- **The Hardware Wall:** 6G simulation toolkits (NVIDIA Sionna) strictly require an enterprise Linux/CUDA workstation. This sandbox solves that by establishing a Hybrid Data Bridge, allowing developers on Apple Silicon macOS to build and test 6G AI components locally using exported cloud tensors.
+- **The Processing Delay (Python Interpreter Overhead):** Running PyTorch deep learning models in standard "Eager Mode" introduces heavy interpreter delays, taking roughly 55.490 ms to process a signal block. This project solves that by using AOT (Ahead-of-Time) Graph Compilation (`torch.compile`), fusing the mathematical layers directly onto the Apple M4 silicon to slash execution latency down to 6.686 ms.
+- **Model Bloat at the Edge:** Instead of forcing a large, power-hungry neural network to waste processing cycles learning to untangle complex environmental radio spins natively, classical matrix calculus handles Perfect Equalization (y/h) during data pre-processing. This allows the local edge model to remain an ultra-lightweight, 3-layer dense architecture.
 
-### 🛑 1. Shattering the "NVIDIA/Linux-Only" Bottleneck
-* **The Constraint:** Advanced 6G link-level simulators—specifically **NVIDIA Sionna 2.0**—strictly require a dedicated Linux/Windows host backed by CUDA-enabled NVIDIA graphics cards to compute dense 3GPP wave equations. 
-* **The Solution:** This project utilizes a **Hybrid Data Bridge**. By running the heavy physical channel math dynamically inside a cloud instance, the pipeline serializes and downloads synchronized tensor matrices (`.npy`) and weight matrices (`.pth`) locally. This allows developers to prototype 6G AI-RAN architectures on consumer-grade computers without complex system-level driver constraints.
+## Valid Areas of This Project
 
-### 🛑 2. Eliminating Edge Model Bloat via Smart Partitioning
-* **The Constraint:** Standard end-to-end neural receivers often rely on heavy, parameters-bloated 2D Convolutional Layers (CNNs) that struggle to meet strict real-time slot processing deadlines.
-* **The Solution:** This architecture implements a **partitioned hybrid design**. Instead of forcing an AI model to waste processing cycles calculating physical channel rotations natively, classical matrix calculus handles **Perfect Equalization ($y/h$)** during the cloud data-engineering phase. Because the phase spin is pre-rectified, the local edge model is stripped down to an ultra-lightweight, 3-layer `nn.Linear` Coordinate Decoder that maps clean 16-QAM coordinates to bits with a flawless **0.0000 Bit Error Rate (BER)**.
+- **Compilation Graph Mechanics:** The deployment engine demonstrates ahead-of-time graph compilation using TorchDynamo. Caching intermediate tensors inside the M4 GPU's local registers instead of forcing constant round-trips to the global memory pool is a solid, advanced ML engineering pattern.
+- **6G Timing Constraint Adherence:** In live cellular networks, Layer 1 data must be processed within strict slot boundaries (typically under 10 milliseconds) to prevent buffer bloat and connection drops. At 6.686 ms, the optimized script demonstrates that this neural receiver can comfortably meet live cellular timing constraints on edge hardware.
+- **A Pristine Control Sandbox for TinyML:** By stripping out multi-path fading channel noise via pre-processing equalization, this creates a clean geometric control environment. This setup is well suited for stress-testing higher-order layouts (like 64-QAM or 256-QAM) or executing low-precision quantization steps (FP16/INT8) to measure how memory bandwidth behaves without environmental noise muddying the hardware profile.
 
-### 🛑 3. Defeating Python Runtime Overhead
-* **The Constraint:** Running PyTorch layers sequentially in traditional Eager Mode introduces massive interpreter tracking overhead, causing local inference times to lag at **55.490 ms**.
-* **The Solution:** The deployment engine leverages **Ahead-of-Time (AOT) Graph Compilation** powered by `TorchDynamo`. It fuses multi-layer mathematical graphs directly onto the silicon, dropping processing execution time down to an ultra-fast **6.686 ms** using local **Apple Metal Performance Shaders (MPS)**.
+## What Is Not Valid (Project Boundaries)
 
----
+To maintain credibility when networking or interviewing with engineers at NVIDIA, be transparent about what this sandbox does not do:
+
+- **It is not a live over-the-air receiver (yet):** This script streams static, pre-rendered data frames from disk (`.npy` files). It is not hooked up to a physical Software-Defined Radio (SDR) antenna processing a live radio frequency waveform in real time.
+- **It assumes "Perfect CSI" knowledge:** In a real cell tower, knowing the channel matrix (h) is difficult because the environment changes constantly. This training loop shortcuts that by using the channel outputs directly from Sionna's physics simulator. In a complete, deployed 6G system, an additional neural network module dedicated to Channel Estimation would be needed before running equalization.
+- **It bypasses complex spatial geometry:** Because it models a single-input single-output (SISO) flat fading channel, it treats fading as a simple complex scalar multiplier. It does not simulate the spatial multiplexing arrays found in multi-antenna Massive MIMO systems.
 
 
-## 🔍 What is This Problem and Workflow Valid For?
+## 🔍 What is This Problem and Workflow Valid For (Summary)?
 
 This project does not attempt to solve an unmapped wireless channel estimation mystery. Instead, it provides a highly valid, production-ready solution to a critical **software engineering, resource accessibility, and infrastructure bottleneck** in next-generation network prototyping. 
 
