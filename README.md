@@ -26,10 +26,12 @@ This prototype implements **Perfect Channel Equalization**. By dividing out the 
 
 ## 📁 Repository Structure
 
-*   **`colab/`** - Cloud-based simulation logic. Contains [Interactive Google Colab Notebook Workflow Here](https://colab.research.google.com/drive/1jN3KRhwKP84HJQnQjMxtH6UOdlyfnIVb#scrollTo=yn1SJDCLBX-K) and corresponding pipeline execution briefs.
-*   **`data/`** - Exported 3GPP channel radio wave tensors & ground-truth bit labels (`.npy`).
-*   **`models/`** - Exported native PyTorch dense model brain state binaries (`.pth`).
+*   **[`THEORY_AND_MAPPING_GUIDE.md`](./THEORY_AND_MAPPING_GUIDE.md)** - **Master Onboarding Blueprint**. Defines the 3-Computer Paradigm, wireless engineering terminologies, and handles deep architectural tracking.
+*   **`colab/`** - Cloud-based data engineering simulation logic and verified training loop parameters.
+*   **`data/`** - *Transient Hardware Cache*. Temporarily houses your downloaded 3GPP channel tensors (`.npy`) for local matrix streaming. Blocked via `.gitignore` to prevent repository binary bloat.
+*   **`models/`** - Exported native PyTorch dense model brain state binaries (`.pth`). Manual cloud download asset safely excluded from public version tracking.
 *   **`src/`** - Local modular Apple Silicon execution modules accelerated via `Metal (MPS)`.
+
 
 ```text
 .
