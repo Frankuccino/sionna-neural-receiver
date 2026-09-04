@@ -33,30 +33,38 @@ This prototype implements **Perfect Channel Equalization**. By dividing out the 
 
 ```text
 .
-├── colab/               # Cloud CUDA generation & training scripts
-├── data/                # Exported 3GPP channel radio wave & bit labels (.npy)
-├── models/              # Exported native PyTorch model brain states (.pth)
-└── src/                 # Local modular Apple Silicon execution modules
-    ├── model.py         # 6G Dense Linear Neural Decoder definition
-    └── mac_inference.py # Core local hardware profiling & benchmark harness
+├── colab/                         # Cloud CUDA generation & training scripts
+├── data/                          # Exported 3GPP channel radio wave & bit labels (.npy)
+├── models/                        # Exported native PyTorch model brain states (.pth)
+└── src/                           # Local modular Apple Silicon execution modules
+    ├── model.py                   # 6G Dense Linear Neural Decoder definition
+    ├── mac_inference.py           # Eager baseline deployment execution harness
+    └── mac_inference_optimized.py # Graph-Compiled AOT optimization module
 ```
 
 ---
 
-## 📊 Performance & Hardware Profiling Summary
+## 📊 Performance, Graph Optimization & Hardware Profiling Summary
 
-The model weights were trained using an **NVIDIA T4 CUDA Tensor Core GPU** inside a cloud simulation instance. Local evaluation and tracking were carried out via **PyTorch MPS (Metal Performance Shaders)** utilizing Apple Silicon's unified memory bandwidth.
+The neural receiver parameters were optimized using an **NVIDIA T4 CUDA Tensor Core GPU** inside a cloud simulation instance. Local edge evaluation, latency profiling, and architectural benchmarking were carried out via **PyTorch MPS (Metal Performance Shaders)** utilizing Apple Silicon's unified memory bandwidth.
 
-### Local Inference Metrics (M4 Core Execution)
+### Local Edge Latency Evolution (M4 Core Execution)
 
-| Metric | Benchmark Result |
-| :--- | :--- |
-| **Target Core Processing Device** | Apple M4 Neural/GPU (via `torch.device("mps")`) |
-| **Total Radio Payload Processed** | **229,376 bits** (64 subcarriers × 14 symbols × 4 bits/symbol) |
-| **End-to-End Hardware Latency** | **492.818 ms** |
-| **Verified Bit Error Rate (BER)** | **0.0000 (Perfect 100% Signal Recovery)** |
-| **Final Cloud Training Loss** | **0.0156** |
+To bridge the gap between initial prototypes and strict real-time 6G slot processing deadlines, this repository profiles the neural receiver across three distinct optimization phases:
 
+1. **Initial Un-optimized Build:** High-overhead loop execution constraints.
+2. **Eager Modular Baseline (`mac_inference.py`):** Structured matrix pipelines dispatched sequentially.
+3. **Graph-Compiled Optimization (`mac_inference_optimized.py`):** Ahead-of-Time (AOT) graph fusion utilizing **TorchDynamo** to eliminate host-to-device tracking overhead and cache intermediate layer data directly on-chip.
+
+| Profiling Metric | Initial Build | Eager Baseline | Graph-Compiled Loop |
+| :--- | :--- | :--- | :--- |
+| **Target Execution Device** | Apple M4 (`mps`) | Apple M4 (`mps`) | Apple M4 (`mps`) |
+| **Total Radio Payload Processed** | **229,376 bits** | **229,376 bits** | **229,376 bits** |
+| **End-to-End Latency** | `492.818 ms` | `55.490 ms` | **6.686 ms** (⚡ ~73x Total Speedup) |
+| **Verified Bit Error Rate (BER)** | `0.0000` | `0.0000` | **0.0000 (100% Signal Recovery)** |
+| **Final Cloud Training Loss** | `0.0156` | `0.0156` | `0.0156` |
+
+---
 ## 🛠️ Step-by-Step Local Deployment Workflow
 
 ### 1. Initialize and Activate Virtual Environment
