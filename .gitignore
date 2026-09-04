@@ -1,0 +1,21 @@
+# --- Python Artifacts ---
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# --- Virtual Environments ---
+.venv/
+venv/
+ENV/
+
+# --- Large Binary Files & 6G Datasets (Crucial for GitHub) ---
+# Prevent tracking massive raw signal data or model weight snapshots
+data/*.npy
+models/*.pth
+
+# --- Operating System & Editor Specifics ---
+.DS_Store
+.vscode/
+.idea/
+

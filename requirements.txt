@@ -1,0 +1,4 @@
+# --- Core Deep Learning & Tensor Operations (Accelerated for Apple Silicon) ---
+torch>=2.4.0
+numpy>=1.26.0
+
