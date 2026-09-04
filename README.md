@@ -56,11 +56,13 @@ To bridge the gap between initial prototypes and strict real-time 6G slot proces
 2. **Eager Modular Baseline (`mac_inference.py`):** Structured matrix pipelines dispatched sequentially.
 3. **Graph-Compiled Optimization (`mac_inference_optimized.py`):** Ahead-of-Time (AOT) graph fusion utilizing **TorchDynamo** to eliminate host-to-device tracking overhead and cache intermediate layer data directly on-chip.
 
+
 | Profiling Metric | Initial Build | Eager Baseline | Graph-Compiled Loop |
 | :--- | :--- | :--- | :--- |
 | **Target Execution Device** | Apple M4 (`mps`) | Apple M4 (`mps`) | Apple M4 (`mps`) |
 | **Total Radio Payload Processed** | **229,376 bits** | **229,376 bits** | **229,376 bits** |
-| **End-to-End Latency** | `492.818 ms` | `55.490 ms` | **6.686 ms** (⚡ ~73x Total Speedup) |
+| **End-to-End Latency** | `492.818 ms` | `55.490 ms` | **6.686 ms** |
+| **Optimization Gains** | Baseline | ⚡ ~9x via Matrix Optimization | **🚀 ~73x Cumulative Speedup** (8.3x via Graph Fusion) |
 | **Verified Bit Error Rate (BER)** | `0.0000` | `0.0000` | **0.0000 (100% Signal Recovery)** |
 | **Final Cloud Training Loss** | `0.0156` | `0.0156` | `0.0156` |
 
